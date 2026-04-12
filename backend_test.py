@@ -133,6 +133,31 @@ class InvertisConnectAPITester:
             print(f"   ✗ Expected list response, got: {response}")
             return False
 
+    def test_blogs_feed_endpoint(self):
+        """Test new blogs feed endpoint"""
+        success, response = self.run_test(
+            "Blogs Feed Endpoint",
+            "GET",
+            "blogs-feed",
+            200
+        )
+        if success and isinstance(response, list):
+            print(f"   ✓ Blogs feed endpoint returned {len(response)} blogs")
+            # Check if blogs have the required fields for feed
+            if len(response) > 0:
+                blog = response[0]
+                required_fields = ['id', 'title', 'content', 'author', 'likes_count', 'comments_count', 'user_liked']
+                missing_fields = [field for field in required_fields if field not in blog]
+                if missing_fields:
+                    print(f"   ✗ Missing fields in blog: {missing_fields}")
+                    return False
+                else:
+                    print(f"   ✓ Blog has all required feed fields")
+            return True
+        else:
+            print(f"   ✗ Expected list response, got: {response}")
+            return False
+
     def test_supabase_auth_login(self, email, password):
         """Test login via Supabase Auth (simulated)"""
         print(f"\n🔍 Testing Supabase Auth Login for {email}...")
@@ -197,6 +222,7 @@ def main():
     tester.test_setup_check()
     tester.test_leaderboard()
     tester.test_blogs_endpoint()
+    tester.test_blogs_feed_endpoint()
     
     # Test auth-protected endpoints (should fail without auth)
     tester.test_admin_endpoints_without_auth()
