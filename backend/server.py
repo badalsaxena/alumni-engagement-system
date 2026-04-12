@@ -69,6 +69,9 @@ class VerifyAlumni(BaseModel):
 class StripeSessionRequest(BaseModel):
     mentor_id: str
 
+class CommentCreate(BaseModel):
+    content: str
+
 # ─── Auth Dependency ───
 async def get_current_user(authorization: str = Header(None)):
     if not authorization or not authorization.startswith('Bearer '):
@@ -156,6 +159,27 @@ create index if not exists idx_connections_student on public.connections(student
 create index if not exists idx_connections_alumni on public.connections(alumni_id);
 create index if not exists idx_messages_connection on public.messages(connection_id);
 create index if not exists idx_blogs_author on public.blogs(author_id);
+
+-- BLOG LIKES TABLE
+create table if not exists public.blog_likes (
+  id uuid default uuid_generate_v4() primary key,
+  blog_id uuid references public.blogs(id) on delete cascade not null,
+  user_id uuid references public.users(id) on delete cascade not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()),
+  unique(blog_id, user_id)
+);
+
+-- BLOG COMMENTS TABLE
+create table if not exists public.blog_comments (
+  id uuid default uuid_generate_v4() primary key,
+  blog_id uuid references public.blogs(id) on delete cascade not null,
+  user_id uuid references public.users(id) on delete cascade not null,
+  content text not null,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+create index if not exists idx_blog_likes_blog on public.blog_likes(blog_id);
+create index if not exists idx_blog_comments_blog on public.blog_comments(blog_id);
 """
 
 @api_router.get("/setup/sql")
@@ -226,7 +250,7 @@ async def create_user_profile(data: UserCreate, authorization: str = Header(None
         "full_name": data.full_name,
         "role": data.role,
         "department": data.department,
-        "alumni_id": data.alumni_id if data.role == 'alumni' else None,
+        "alumni_id": data.alumni_id if data.role == 'alumni' and data.alumni_id else (f"ALU-{datetime.now().year}-{data.department}-{str(uuid.uuid4())[:6].upper()}" if data.role == 'alumni' else None),
         "linkedin_url": data.linkedin_url,
         "bio": data.bio,
         "status": "pending" if data.role == 'alumni' else "active",
@@ -396,6 +420,75 @@ async def delete_blog(blog_id: str, authorization: str = Header(None)):
     supabase.table('blogs').delete().eq('id', blog_id).execute()
     return {"success": True}
 
+# ─── Blog Detail, Likes, Comments ───
+@api_router.get("/blogs/{blog_id}")
+async def get_blog_detail(blog_id: str, authorization: str = Header(None)):
+    user = await get_optional_user(authorization)
+    blog = supabase.table('blogs').select('*, author:author_id(id, full_name, department, avatar_url, bio, score)').eq('id', blog_id).single().execute()
+    if not blog.data:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    likes = supabase.table('blog_likes').select('*', count='exact').eq('blog_id', blog_id).execute()
+    comments = supabase.table('blog_comments').select('*, user:user_id(id, full_name, department, avatar_url)').eq('blog_id', blog_id).order('created_at', desc=True).execute()
+    user_liked = False
+    if user:
+        user_like = supabase.table('blog_likes').select('id').eq('blog_id', blog_id).eq('user_id', str(user.id)).execute()
+        user_liked = len(user_like.data) > 0
+    return {
+        **blog.data,
+        "likes_count": likes.count or 0,
+        "comments_count": len(comments.data) if comments.data else 0,
+        "comments": comments.data or [],
+        "user_liked": user_liked,
+    }
+
+@api_router.get("/blogs-feed")
+async def get_blogs_feed(type: Optional[str] = None, authorization: str = Header(None)):
+    user = await get_optional_user(authorization)
+    query = supabase.table('blogs').select('*, author:author_id(id, full_name, department, avatar_url, score)').eq('status', 'published')
+    if type:
+        query = query.eq('type', type)
+    result = query.order('created_at', desc=True).execute()
+    blogs = result.data or []
+    for blog in blogs:
+        likes = supabase.table('blog_likes').select('*', count='exact').eq('blog_id', blog['id']).execute()
+        comments = supabase.table('blog_comments').select('*', count='exact').eq('blog_id', blog['id']).execute()
+        blog['likes_count'] = likes.count or 0
+        blog['comments_count'] = comments.count or 0
+        if user:
+            user_like = supabase.table('blog_likes').select('id').eq('blog_id', blog['id']).eq('user_id', str(user.id)).execute()
+            blog['user_liked'] = len(user_like.data) > 0
+        else:
+            blog['user_liked'] = False
+    return blogs
+
+@api_router.post("/blogs/{blog_id}/like")
+async def toggle_like(blog_id: str, authorization: str = Header(None)):
+    user = await get_current_user(authorization)
+    uid = str(user.id)
+    existing = supabase.table('blog_likes').select('id').eq('blog_id', blog_id).eq('user_id', uid).execute()
+    if existing.data:
+        supabase.table('blog_likes').delete().eq('blog_id', blog_id).eq('user_id', uid).execute()
+        return {"liked": False}
+    else:
+        supabase.table('blog_likes').insert({"blog_id": blog_id, "user_id": uid}).execute()
+        return {"liked": True}
+
+@api_router.get("/blogs/{blog_id}/comments")
+async def get_comments(blog_id: str):
+    result = supabase.table('blog_comments').select('*, user:user_id(id, full_name, department, avatar_url)').eq('blog_id', blog_id).order('created_at', desc=True).execute()
+    return result.data or []
+
+@api_router.post("/blogs/{blog_id}/comments")
+async def add_comment(blog_id: str, data: CommentCreate, authorization: str = Header(None)):
+    user = await get_current_user(authorization)
+    comment = {
+        "blog_id": blog_id,
+        "user_id": str(user.id),
+        "content": data.content,
+    }
+    result = supabase.table('blog_comments').insert(comment).execute()
+    return result.data[0] if result.data else comment
+
 # ─── AI Moderation ───
 async def moderate_blog_content(title: str, content: str, content_type: str):
     try:
@@ -553,6 +646,38 @@ async def delete_user(user_id: str, authorization: str = Header(None)):
     await require_admin(authorization)
     supabase.table('users').delete().eq('id', user_id).execute()
     return {"success": True}
+
+@api_router.get("/admin/analytics")
+async def get_admin_analytics(authorization: str = Header(None)):
+    await require_admin(authorization)
+    # Department distribution
+    all_users = supabase.table('users').select('department, role, status, created_at, score').execute()
+    dept_dist = {}
+    role_dist = {"student": 0, "alumni": 0, "admin": 0}
+    for u in (all_users.data or []):
+        dept = u.get('department', 'Unknown')
+        dept_dist[dept] = dept_dist.get(dept, 0) + 1
+        role_dist[u.get('role', 'student')] = role_dist.get(u.get('role', 'student'), 0) + 1
+    # Connection stats
+    all_conns = supabase.table('connections').select('status').execute()
+    conn_stats = {"pending": 0, "accepted": 0, "rejected": 0}
+    for c in (all_conns.data or []):
+        conn_stats[c.get('status', 'pending')] = conn_stats.get(c.get('status', 'pending'), 0) + 1
+    # Blog stats
+    all_blogs = supabase.table('blogs').select('type, status').execute()
+    blog_stats = {"experience": 0, "referral": 0, "internship": 0}
+    for b in (all_blogs.data or []):
+        if b.get('status') == 'published':
+            blog_stats[b.get('type', 'experience')] = blog_stats.get(b.get('type', 'experience'), 0) + 1
+    # Top alumni
+    top_alumni = supabase.table('users').select('full_name, department, score').eq('role', 'alumni').eq('status', 'active').order('score', desc=True).limit(5).execute()
+    return {
+        "department_distribution": [{"name": k, "value": v} for k, v in dept_dist.items()],
+        "role_distribution": [{"name": k, "value": v} for k, v in role_dist.items()],
+        "connection_stats": [{"name": k, "value": v} for k, v in conn_stats.items()],
+        "blog_stats": [{"name": k, "value": v} for k, v in blog_stats.items()],
+        "top_alumni": top_alumni.data or [],
+    }
 
 # ─── Include router and middleware ───
 app.include_router(api_router)

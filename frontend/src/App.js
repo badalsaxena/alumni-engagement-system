@@ -21,6 +21,9 @@ import LeaderboardPage from "@/pages/alumni/LeaderboardPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import VerifyPage from "@/pages/admin/VerifyPage";
 import UsersPage from "@/pages/admin/UsersPage";
+import AnalyticsPage from "@/pages/admin/AnalyticsPage";
+import BlogFeedPage from "@/pages/BlogFeedPage";
+import BlogDetailPage from "@/pages/BlogDetailPage";
 import SetupPage from "@/pages/SetupPage";
 
 function ProtectedRoute({ children, requiredRole }) {
@@ -64,12 +67,15 @@ function App() {
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/pending-approval" element={<PendingApprovalPage />} />
             <Route path="/setup" element={<SetupPage />} />
+            {/* Shared Routes */}
+            <Route path="/blog/:blogId" element={<ProtectedRoute><BlogDetailPage /></ProtectedRoute>} />
             {/* Student Routes */}
             <Route path="/student" element={<ProtectedRoute requiredRole="student"><StudentDashboard /></ProtectedRoute>} />
             <Route path="/student/mentors" element={<ProtectedRoute requiredRole="student"><MentorsPage /></ProtectedRoute>} />
             <Route path="/student/connections" element={<ProtectedRoute requiredRole="student"><StudentConnectionsPage /></ProtectedRoute>} />
             <Route path="/student/chat/:connectionId" element={<ProtectedRoute requiredRole="student"><StudentChatPage /></ProtectedRoute>} />
             <Route path="/student/knowledge-hub" element={<ProtectedRoute requiredRole="student"><KnowledgeHubPage /></ProtectedRoute>} />
+            <Route path="/student/feed" element={<ProtectedRoute requiredRole="student"><BlogFeedPage /></ProtectedRoute>} />
             {/* Alumni Routes */}
             <Route path="/alumni" element={<ProtectedRoute requiredRole="alumni"><AlumniDashboard /></ProtectedRoute>} />
             <Route path="/alumni/requests" element={<ProtectedRoute requiredRole="alumni"><RequestsPage /></ProtectedRoute>} />
@@ -77,10 +83,13 @@ function App() {
             <Route path="/alumni/chat/:connectionId" element={<ProtectedRoute requiredRole="alumni"><AlumniChatPage /></ProtectedRoute>} />
             <Route path="/alumni/blogs" element={<ProtectedRoute requiredRole="alumni"><BlogsPage /></ProtectedRoute>} />
             <Route path="/alumni/leaderboard" element={<ProtectedRoute requiredRole="alumni"><LeaderboardPage /></ProtectedRoute>} />
+            <Route path="/alumni/feed" element={<ProtectedRoute requiredRole="alumni"><BlogFeedPage /></ProtectedRoute>} />
             {/* Admin Routes */}
             <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/verify" element={<ProtectedRoute requiredRole="admin"><VerifyPage /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><UsersPage /></ProtectedRoute>} />
+            <Route path="/admin/analytics" element={<ProtectedRoute requiredRole="admin"><AnalyticsPage /></ProtectedRoute>} />
+            <Route path="/admin/feed" element={<ProtectedRoute requiredRole="admin"><BlogFeedPage /></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

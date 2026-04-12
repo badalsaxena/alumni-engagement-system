@@ -1,11 +1,12 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, Users, MessageSquare, BookOpen, Trophy, FileText, LogOut, UserCheck, Settings, Zap } from 'lucide-react';
+import { LayoutDashboard, Users, MessageSquare, BookOpen, Trophy, FileText, LogOut, UserCheck, Zap, Rss, BarChart3 } from 'lucide-react';
 
 const studentLinks = [
   { to: '/student', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/student/mentors', label: 'Find Mentors', icon: Users },
   { to: '/student/connections', label: 'Connections', icon: MessageSquare },
+  { to: '/student/feed', label: 'Community Feed', icon: Rss },
   { to: '/student/knowledge-hub', label: 'Knowledge Hub', icon: BookOpen },
 ];
 
@@ -13,6 +14,7 @@ const alumniLinks = [
   { to: '/alumni', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/alumni/requests', label: 'Requests', icon: UserCheck },
   { to: '/alumni/connections', label: 'Connections', icon: MessageSquare },
+  { to: '/alumni/feed', label: 'Community Feed', icon: Rss },
   { to: '/alumni/blogs', label: 'Write Blog', icon: FileText },
   { to: '/alumni/leaderboard', label: 'Leaderboard', icon: Trophy },
 ];
@@ -21,6 +23,8 @@ const adminLinks = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/admin/verify', label: 'Verify Alumni', icon: UserCheck },
   { to: '/admin/users', label: 'Manage Users', icon: Users },
+  { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { to: '/admin/feed', label: 'Community Feed', icon: Rss },
 ];
 
 export default function DashboardLayout({ children }) {

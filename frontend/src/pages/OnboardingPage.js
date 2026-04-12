@@ -29,10 +29,6 @@ export default function OnboardingPage() {
       setError('Please fill in all required fields');
       return;
     }
-    if (role === 'alumni' && !formData.alumni_id.trim()) {
-      setError('Alumni ID is required');
-      return;
-    }
     setSubmitting(true);
     setError('');
     try {
@@ -127,9 +123,8 @@ export default function OnboardingPage() {
           </div>
           {role === 'alumni' && (
             <>
-              <div>
-                <label className="block text-xs text-white/30 uppercase tracking-wider mb-2">Alumni ID *</label>
-                <input value={formData.alumni_id} onChange={(e) => setFormData({ ...formData, alumni_id: e.target.value })} placeholder="e.g., ALU2018CSE001" className="input-noir w-full" data-testid="onboarding-alumni-id-input" />
+              <div className="glass-panel p-3 text-xs text-white/30">
+                Your Alumni ID will be auto-generated upon registration.
               </div>
               <div>
                 <label className="block text-xs text-white/30 uppercase tracking-wider mb-2">LinkedIn (optional)</label>
