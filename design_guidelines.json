@@ -1,0 +1,100 @@
+{
+  "theme": "Architectural Noir",
+  "archetype": "4 (Swiss & High-Contrast - Monochrome variant)",
+  "colors": {
+    "background": "#000000",
+    "foreground": "#ffffff",
+    "primary": {
+      "DEFAULT": "#ffffff",
+      "foreground": "#000000"
+    },
+    "secondary": {
+      "DEFAULT": "#111111",
+      "foreground": "#ffffff"
+    },
+    "muted": {
+      "DEFAULT": "#1a1a1a",
+      "foreground": "#a1a1aa"
+    },
+    "border": "rgba(255,255,255,0.1)",
+    "glass": {
+      "bg": "rgba(255, 255, 255, 0.03)",
+      "border": "rgba(255, 255, 255, 0.1)",
+      "blur": "blur(16px)"
+    }
+  },
+  "typography": {
+    "headings": {
+      "fontFamily": "Outfit, sans-serif",
+      "weights": ["300", "400", "600"],
+      "tracking": "tracking-tight"
+    },
+    "body": {
+      "fontFamily": "Manrope, sans-serif",
+      "weights": ["300", "400", "500"]
+    },
+    "mono": {
+      "fontFamily": "JetBrains Mono, monospace"
+    }
+  },
+  "spacing": {
+    "container": "p-8 md:p-12 lg:p-16",
+    "card": "p-6 md:p-8"
+  },
+  "components": {
+    "cards": {
+      "style": "glassmorphism",
+      "classes": "bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+    },
+    "buttons": {
+      "primary": "bg-white text-black hover:bg-gray-200 transition-colors duration-200 rounded-none px-6 py-3 font-medium",
+      "secondary": "bg-transparent text-white border border-white/20 hover:bg-white/5 transition-colors duration-200 rounded-none px-6 py-3"
+    },
+    "inputs": {
+      "classes": "bg-transparent border border-white/10 rounded-md px-4 py-2 focus:border-white/40 focus:ring-0 text-white placeholder:text-gray-500 transition-colors bg-white/[0.02] backdrop-blur-md"
+    }
+  },
+  "layout": {
+    "hero": "min-h-screen flex items-center relative overflow-hidden bg-black",
+    "bento_grid": "grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-8"
+  },
+  "media": {
+    "hero_image": {
+      "url": "https://images.unsplash.com/photo-1715534968149-8638313454ed?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwxfHxkYXJrJTIwZ2xhc3MlMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzc2MDIyMDE1fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Dark glass architecture, looking up at a skyscraper, matching noir theme"
+    },
+    "abstract_texture": {
+      "url": "https://images.pexels.com/photos/33944149/pexels-photo-33944149.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Monochrome abstract texture background with vertical lines"
+    },
+    "mentor_portraits": [
+      {
+        "url": "https://images.pexels.com/photos/29500576/pexels-photo-29500576.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Professional portrait of a female mentor"
+      },
+      {
+        "url": "https://images.pexels.com/photos/4687549/pexels-photo-4687549.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Professional portrait of a male mentor"
+      }
+    ],
+    "company_logos": [
+      {
+        "url": "https://images.unsplash.com/photo-1551263640-1c007852f616?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwxfHxzdGFydHVwJTIwbG9nbyUyMGJsYWNrJTIwYW5kJTIwd2hpdGV8ZW58MHx8fHwxNzc2MDIyMDIyfDA&ixlib=rb-4.1.0&q=85",
+        "description": "App sign / Logo"
+      }
+    ]
+  },
+  "interactions": {
+    "hover": "Subtle border brightness increase (border-white/30) and slight transform (-translate-y-1) for cards",
+    "glass_fx": "Use framer-motion to create shimmering border tracing effects on premium cards (Aceternity style)"
+  },
+  "instructions_to_main_agent": [
+    "Ensure global background is pitch black (#000000) and text is white.",
+    "Use Outfit for headings and Manrope for body text via next/font/google or standard HTML imports.",
+    "All cards must follow the glassmorphism specification: bg-white/[0.03], backdrop-blur-xl, 1px border of white/10.",
+    "Implement the UI primarily using Aceternity UI components (Tracing Beam, Sparkles for hero, Bento Grids) and standard Shadcn components customized to the Noir theme.",
+    "For the hero background, apply a very heavy black gradient overlay (bg-black/70) so the glass architecture image adds subtle texture without distracting from text.",
+    "Include 'data-testid' on all interactive elements (buttons, inputs, links).",
+    "Keep border radiuses minimal (max 8px) or use sharp edges for a more Brutalist Noir aesthetic."
+  ]
+}
