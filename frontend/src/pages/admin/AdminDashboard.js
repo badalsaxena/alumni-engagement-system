@@ -7,19 +7,19 @@ import { Users, Clock, FileText, TrendingUp, ArrowRight, Loader2 } from 'lucide-
 const API = process.env.REACT_APP_BACKEND_URL;
 
 export default function AdminDashboard() {
-  const { profile, getToken } = useAuth();
+  const { profile, session } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = getToken();
+    const token = session?.access_token;
     if (!token) return;
     fetch(`${API}/api/admin/stats`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => setStats(d))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [getToken]);
+  }, [session]);
 
   const statCards = stats ? [
     { label: 'Total Users', value: stats.total_users, icon: Users },

@@ -20,14 +20,15 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function AnalyticsPage() {
-  const { getToken } = useAuth();
+  const { getToken, session } = useAuth();
   const [analytics, setAnalytics] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = getToken();
+    const token = session?.access_token;
     if (!token) return;
+    setLoading(true);
     Promise.all([
       fetch(`${API}/api/admin/analytics`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
       fetch(`${API}/api/admin/stats`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
@@ -35,7 +36,7 @@ export default function AnalyticsPage() {
       setAnalytics(a);
       setStats(s);
     }).catch(console.error).finally(() => setLoading(false));
-  }, [getToken]);
+  }, [session]);
 
   if (loading) {
     return <DashboardLayout><div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-white/40" /></div></DashboardLayout>;

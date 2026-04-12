@@ -65,7 +65,21 @@ export function AuthProvider({ children }) {
     setSession(null);
   };
 
-  const getToken = () => session?.access_token;
+  const getToken = useCallback(() => {
+    if (session?.access_token) return session.access_token;
+    return null;
+  }, [session]);
+
+  // Periodically refresh session
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        setSession(data.session);
+      }
+    }, 60000); // refresh every 60s
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, profile, loading, session, signOut, refreshProfile, getToken }}>
