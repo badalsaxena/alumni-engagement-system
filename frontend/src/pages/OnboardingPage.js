@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { GraduationCap, Briefcase, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -15,11 +15,14 @@ export default function OnboardingPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !user) navigate('/auth/login');
+    if (!loading && profile) navigate(`/${profile.role}`);
+  }, [loading, user, profile, navigate]);
+
+  if (loading || !user || profile) {
     return <div className="min-h-screen bg-black flex items-center justify-center"><div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" /></div>;
   }
-  if (!user) { navigate('/auth/login'); return null; }
-  if (profile) { navigate(`/${profile.role}`); return null; }
 
   const handleSubmit = async () => {
     if (!formData.full_name.trim() || !formData.department) {
