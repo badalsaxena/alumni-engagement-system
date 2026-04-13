@@ -139,7 +139,7 @@ export default function LandingPage() {
             Ready to <span className="font-semibold">connect</span>?
           </h2>
           <p className="text-white/40 max-w-lg mx-auto">
-            Join InvertisConnect today and start building meaningful mentorship relationships with verified alumni from your department.
+            Join AlumniConnect today and start building meaningful mentorship relationships with verified alumni from your department.
           </p>
           <Link to="/auth/signup" className="btn-primary inline-flex items-center gap-2" data-testid="cta-signup-btn">
             Create Your Account <ArrowRight className="w-4 h-4" />
