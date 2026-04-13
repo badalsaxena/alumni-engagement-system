@@ -8,7 +8,7 @@ Build InvertisConnect, a production-ready mentorship platform connecting student
 - **Backend**: FastAPI (Python) on port 8001
 - **Database**: Supabase (PostgreSQL) via REST API
 - **Auth**: Supabase Auth (email/password)
-- **AI**: Emergent LLM Key (GPT-4o) for blog moderation + smart matching
+- **AI**: Bug Off LLM Key (GPT-4o) for blog moderation + smart matching
 - **Payments**: Stripe (test key)
 - **Design**: Architectural Noir - pure black/white monochrome with glassmorphism
 

@@ -24,8 +24,8 @@ supabase = create_client(supabase_url, supabase_service_key)
 # Initialize Stripe
 stripe.api_key = os.environ.get('STRIPE_API_KEY')
 
-# Emergent LLM key
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
+# Bug Off LLM key
+BUGOFF_LLM_KEY = os.environ.get('BUGOFF_LLM_KEY')
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -494,7 +494,7 @@ async def moderate_blog_content(title: str, content: str, content_type: str):
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
+            api_key=BUGOFF_LLM_KEY,
             session_id=f"mod-{uuid.uuid4()}",
             system_message="""You are a content moderator for InvertisConnect, a professional mentorship platform.
 Evaluate blog posts for relevance and appropriateness.
@@ -530,7 +530,7 @@ async def smart_match(authorization: str = Header(None)):
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
+            api_key=BUGOFF_LLM_KEY,
             session_id=f"match-{uuid.uuid4()}",
             system_message="""You are a mentor matching system. Given a student and available alumni, rank the top 3 most suitable mentors.
 Consider: experience, score, bio relevance, profile completeness.
