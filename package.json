@@ -1,0 +1,14 @@
+{
+  "name": "alumni-engagement-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"FRONTEND,BACKEND\" --prefix-colors \"cyan,yellow\" \"npm run frontend\" \"npm run backend\"",
+    "frontend": "npm start --prefix frontend",
+    "backend": "cd backend && python -m uvicorn server:app --host 0.0.0.0 --port 8001 --reload",
+    "install:frontend": "npm install --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

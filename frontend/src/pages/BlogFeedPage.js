@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -14,11 +14,7 @@ export default function BlogFeedPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
 
-  useEffect(() => {
-    fetchBlogs();
-  }, [filter]);
-
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     try {
       const token = getToken();
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -30,7 +26,11 @@ export default function BlogFeedPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, getToken]);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
 
   const handleLike = async (blogId) => {
     const token = getToken();

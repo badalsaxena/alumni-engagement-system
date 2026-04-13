@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Search, Zap, MessageSquare, Calendar, ExternalLink, Loader2 } from 'lucide-react';
@@ -15,11 +15,7 @@ export default function MentorsPage() {
   const [search, setSearch] = useState('');
   const [dept, setDept] = useState('');
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const token = getToken();
     try {
       const [alumniRes, connRes] = await Promise.all([
@@ -37,7 +33,11 @@ export default function MentorsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getToken]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSmartMatch = async () => {
     setMatchLoading(true);

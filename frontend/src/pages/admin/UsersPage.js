@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Trash2, Search, Loader2 } from 'lucide-react';
@@ -13,11 +13,7 @@ export default function UsersPage() {
   const [deptFilter, setDeptFilter] = useState('');
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    fetchUsers();
-  }, [roleFilter, deptFilter]);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     const token = getToken();
     let url = `${API}/api/admin/users?`;
     if (roleFilter) url += `role=${roleFilter}&`;
@@ -31,7 +27,11 @@ export default function UsersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [roleFilter, deptFilter, getToken]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleDelete = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;

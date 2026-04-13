@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Check, X, ExternalLink, Loader2 } from 'lucide-react';
@@ -11,11 +11,7 @@ export default function VerifyPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(null);
 
-  useEffect(() => {
-    fetchPending();
-  }, []);
-
-  const fetchPending = async () => {
+  const fetchPending = useCallback(async () => {
     const token = getToken();
     try {
       const res = await fetch(`${API}/api/admin/pending-alumni`, { headers: { Authorization: `Bearer ${token}` } });
@@ -26,7 +22,11 @@ export default function VerifyPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getToken]);
+
+  useEffect(() => {
+    fetchPending();
+  }, [fetchPending]);
 
   const handleVerify = async (userId, approve) => {
     setProcessing(userId);
