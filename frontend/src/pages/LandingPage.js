@@ -40,7 +40,7 @@ export default function LandingPage() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-[0.07]"
+          className="absolute inset-0 bg-cover bg-center opacity-[0.5]"
           style={{ backgroundImage: `url(https://images.unsplash.com/photo-1715534968149-8638313454ed?w=1600)` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
