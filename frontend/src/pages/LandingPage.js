@@ -23,7 +23,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/70 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="font-heading text-xl font-semibold tracking-tight" data-testid="logo-link">
-            Invertis<span className="text-white/50">Connect</span>
+            Alumni<span className="text-white/50">Connect</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/auth/login" className="text-sm text-white/60 hover:text-white transition-colors" data-testid="nav-login-link">
@@ -113,7 +113,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
             { label: 'Departments', value: '6' },
-            { label: 'AI Powered', value: 'GPT-4o' },
+            { label: 'AI Powered', value: 'GPT-4.o' },
             { label: 'Real-time Chat', value: 'Live' },
             { label: 'Verified Alumni', value: 'Admin-gated' },
           ].map((stat, i) => (
@@ -150,8 +150,8 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-white/5">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-white/20">
-          <span className="font-heading">InvertisConnect</span>
-          <span>Invertis University</span>
+          <span className="font-heading">AlumniConnect</span>
+          <span>Made by Team Bug Off</span>
         </div>
       </footer>
     </div>

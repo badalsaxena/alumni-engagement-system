@@ -35,7 +35,7 @@ export default function LoginPage() {
             <ArrowLeft className="w-4 h-4" /> Back
           </Link>
           <h1 className="font-heading text-3xl font-semibold tracking-tight">Welcome back</h1>
-          <p className="text-white/40 mt-2 font-body text-sm">Sign in to your InvertisConnect account</p>
+          <p className="text-white/40 mt-2 font-body text-sm">Sign in to your AlumniConnect account</p>
         </div>
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 rounded-md px-4 py-3 text-red-400 text-sm" data-testid="login-error">

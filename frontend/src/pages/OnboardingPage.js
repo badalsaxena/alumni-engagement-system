@@ -57,7 +57,7 @@ export default function OnboardingPage() {
         <div className="glass-panel p-8 sm:p-10 max-w-md w-full space-y-8">
           <div className="text-center">
             <h1 className="font-heading text-3xl font-semibold tracking-tight">Welcome</h1>
-            <p className="text-white/40 mt-2 text-sm">How will you use InvertisConnect?</p>
+            <p className="text-white/40 mt-2 text-sm">How will you use AlumniConnect?</p>
           </div>
           <div className="space-y-4">
             <button
